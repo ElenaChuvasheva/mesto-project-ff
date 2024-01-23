@@ -1,27 +1,22 @@
 import "../pages/index.css";
 
-import { initialCards } from "./cards.js";
+import { deleteCard, initialCards, makeCard } from "./cards.js";
+import { closeModal, openModal, openModalClassesObj } from "./modal.js";
 
-const cardTemplate = document.querySelector("#card-template").content;
 const placesList = document.querySelector(".places__list");
-const placeElement = cardTemplate.querySelector(".places__item");
-
-function makeCard(cardData, deleteButtonCallback) {
-  const placeElementClone = placeElement.cloneNode(true);
-  placeElementClone.querySelector(".card__title").textContent = cardData.name;
-  const cardImage = placeElementClone.querySelector(".card__image");
-  cardImage.src = cardData.link;
-  cardImage.alt = "Пейзажное фото места " + cardData.name;
-  placeElementClone
-    .querySelector(".card__delete-button")
-    .addEventListener("click", deleteButtonCallback);
-  return placeElementClone;
-}
-
-function deleteCard(ev) {
-  ev.target.closest(".places__item").remove();
-}
 
 initialCards.forEach((item) => {
   placesList.append(makeCard(item, deleteCard));
 });
+
+for (let key in openModalClassesObj) {
+  let butt = document.querySelector("." + key);
+  let popup = document.querySelector("." + openModalClassesObj[key]);
+  butt.addEventListener("click", () => {
+    openModal(popup);
+  });
+  let closePopupButton = popup.querySelector(".popup__close");
+  closePopupButton.addEventListener("click", () => {
+    closeModal(popup);
+  });
+}
