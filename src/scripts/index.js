@@ -19,4 +19,10 @@ for (let key in openModalClassesObj) {
   closePopupButton.addEventListener("click", () => {
     closeModal(popup);
   });
+  popup.addEventListener("click", (event) => {
+    if (event.target.classList.contains("popup")) {
+      console.log(event.target);
+      closeModal(popup);
+    }
+  });
 }
