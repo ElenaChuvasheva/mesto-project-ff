@@ -19,23 +19,44 @@ const newPlaceForm = document.querySelector("form[name='new-place']");
 const newPlaceName = newPlaceForm.querySelector("input[name='place-name']");
 const newPlaceUrl = newPlaceForm.querySelector("input[name='link']");
 
+const zoomPhoto = (event) => {
+  if (event.target.classList.contains("card__image")) {
+    popupImgCaption.textContent = event.target
+      .closest(".card")
+      .querySelector(".card__title").textContent;
+    popupImg.src = event.target.src;
+    popupImg.alt = event.target.alt;
+  }
+};
+
+const handleProfileFormSubmit = (event) => {
+  event.preventDefault();
+  profileTitle.textContent = profileForm.name.value;
+  profileDescription.textContent = profileForm.description.value;
+  closeModal(event.target.closest(".popup"));
+};
+
+const handleNewPlaceFormSubmit = (event) => {
+  event.preventDefault();
+  closeModal(event.target.closest(".popup"));
+  const cardData = { name: newPlaceName.value, link: newPlaceUrl.value };
+  const newCardClone = makeCard(cardData);
+  placesList.prepend(newCardClone);
+  closeModal(event.target.closest(".popup"));
+  newPlaceForm.reset();
+};
+
+initialCards.forEach((item) => {
+  placesList.append(makeCard(item));
+});
+
 popupImg.onload = () => {
   openModal(imgPopup);
 };
 
-const zoomPhoto = (event) => {
-  popupImgCaption.textContent = event.target
-    .closest(".card")
-    .querySelector(".card__title").textContent;
-  popupImg.src = event.target.src;
-  popupImg.alt = event.target.alt;
-};
-
-initialCards.forEach((item) => {
-  placesList.append(makeCard(item, deleteCard, zoomPhoto));
+[handleLikeButton, deleteCard, zoomPhoto].forEach((callback) => {
+  placesList.addEventListener("click", callback);
 });
-
-placesList.addEventListener("click", handleLikeButton);
 
 [imgPopup, profilePopup, addPopup].forEach((popup) => {
   let closePopupButton = popup.querySelector(".popup__close");
@@ -52,27 +73,10 @@ openProfilePopupButton.addEventListener("click", () => {
   openModal(profilePopup);
 });
 
-const handleProfileFormSubmit = (event) => {
-  event.preventDefault();
-  profileTitle.textContent = profileForm.name.value;
-  profileDescription.textContent = profileForm.description.value;
-  closeModal(event.target.closest(".popup"));
-};
-
 profileForm.addEventListener("submit", handleProfileFormSubmit);
 
 openAddPopupButton.addEventListener("click", () => {
   openModal(addPopup);
 });
-
-const handleNewPlaceFormSubmit = (event) => {
-  event.preventDefault();
-  closeModal(event.target.closest(".popup"));
-  const cardData = { name: newPlaceName.value, link: newPlaceUrl.value };
-  const newCardClone = makeCard(cardData, deleteCard, zoomPhoto);
-  placesList.prepend(newCardClone);
-  closeModal(event.target.closest(".popup"));
-  newPlaceForm.reset();
-};
 
 newPlaceForm.addEventListener("submit", handleNewPlaceFormSubmit);

@@ -8,26 +8,20 @@ const handleLikeButton = (event) => {
   }
 };
 
-const makeCard = (
-  cardData,
-  deleteButtonCallback,
-  zoomPhotoCallback,
-  likeButtonCallback
-) => {
+const makeCard = (cardData, likeButtonCallback) => {
   const placeElementClone = placeElement.cloneNode(true);
   placeElementClone.querySelector(".card__title").textContent = cardData.name;
   const cardImage = placeElementClone.querySelector(".card__image");
   cardImage.src = cardData.link;
   cardImage.alt = "Пейзажное фото места " + cardData.name;
-  placeElementClone
-    .querySelector(".card__delete-button")
-    .addEventListener("click", deleteButtonCallback);
-  cardImage.addEventListener("click", zoomPhotoCallback);
+  placeElementClone.querySelector(".card__delete-button");
   return placeElementClone;
 };
 
 const deleteCard = (event) => {
-  event.target.closest(".places__item").remove();
+  if (event.target.classList.contains("card__delete-button")) {
+    event.target.closest(".places__item").remove();
+  }
 };
 
 export { deleteCard, handleLikeButton, makeCard };
