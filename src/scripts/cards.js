@@ -16,7 +16,7 @@ const initialCards = [
   },
 ];
 
-const makeCard = (cardData, deleteButtonCallback) => {
+const makeCard = (cardData, deleteButtonCallback, zoomPhotoCallback) => {
   const placeElementClone = placeElement.cloneNode(true);
   placeElementClone.querySelector(".card__title").textContent = cardData.name;
   const cardImage = placeElementClone.querySelector(".card__image");
@@ -25,11 +25,12 @@ const makeCard = (cardData, deleteButtonCallback) => {
   placeElementClone
     .querySelector(".card__delete-button")
     .addEventListener("click", deleteButtonCallback);
+  cardImage.addEventListener("click", zoomPhotoCallback);
   return placeElementClone;
 };
 
-const deleteCard = (ev) => {
-  ev.target.closest(".places__item").remove();
+const deleteCard = (event) => {
+  event.target.closest(".places__item").remove();
 };
 
 export { deleteCard, initialCards, makeCard };
