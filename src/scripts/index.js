@@ -1,8 +1,8 @@
 import "../pages/index.css";
 
-import { deleteCard, likeButtonHandler, makeCard } from "./card.js";
+import { deleteCard, handleLikeButton, makeCard } from "./card.js";
 import { initialCards } from "./cards.js";
-import { clickOverlayHandler, closeModal, openModal } from "./modal.js";
+import { closeModal, handleOverlayClick, openModal } from "./modal.js";
 
 const placesList = document.querySelector(".places__list");
 const imgPopup = document.querySelector(".popup_type_image"),
@@ -35,14 +35,14 @@ initialCards.forEach((item) => {
   placesList.append(makeCard(item, deleteCard, zoomPhoto));
 });
 
-placesList.addEventListener("click", likeButtonHandler);
+placesList.addEventListener("click", handleLikeButton);
 
 [imgPopup, profilePopup, addPopup].forEach((popup) => {
   let closePopupButton = popup.querySelector(".popup__close");
   closePopupButton.addEventListener("click", () => {
     closeModal(popup);
   });
-  popup.addEventListener("click", clickOverlayHandler);
+  popup.addEventListener("click", handleOverlayClick);
   popup.classList.add("popup_is-animated");
 });
 

@@ -1,7 +1,7 @@
 const cardTemplate = document.querySelector("#card-template").content;
 const placeElement = cardTemplate.querySelector(".places__item");
 
-const likeButtonHandler = (event) => {
+const handleLikeButton = (event) => {
   const targetClassList = event.target.classList;
   if (targetClassList.contains("card__like-button")) {
     targetClassList.toggle("card__like-button_is-active");
@@ -30,4 +30,4 @@ const deleteCard = (event) => {
   event.target.closest(".places__item").remove();
 };
 
-export { deleteCard, likeButtonHandler, makeCard };
+export { deleteCard, handleLikeButton, makeCard };
