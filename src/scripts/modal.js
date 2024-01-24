@@ -1,7 +1,12 @@
 const escHandler = (event) => {
   if (event.key === "Escape") {
-    const modal = document.querySelector(".popup_is-opened");
-    closeModal(modal);
+    closeModal(document.querySelector(".popup_is-opened"));
+  }
+};
+
+const clickOverlayHandler = (event) => {
+  if (event.target.classList.contains("popup")) {
+    closeModal(document.querySelector(".popup_is-opened"));
   }
 };
 
@@ -15,14 +20,4 @@ const closeModal = (modalEl) => {
   document.removeEventListener("keydown", escHandler);
 };
 
-const openFormPopupClassesObj = {
-  ".profile__add-button": ".popup_type_new-card",
-  ".profile__edit-button": ".popup_type_edit",
-};
-
-const openPopupClassesObj = Object.assign(
-  { ".card__image": ".popup_type_image" },
-  openFormPopupClassesObj
-);
-
-export { closeModal, openFormPopupClassesObj, openModal, openPopupClassesObj };
+export { clickOverlayHandler, closeModal, openModal };
