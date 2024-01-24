@@ -2,26 +2,35 @@ const cardTemplate = document.querySelector("#card-template").content;
 const placeElement = cardTemplate.querySelector(".places__item");
 
 const handleLikeButton = (event) => {
-  const targetClassList = event.target.classList;
-  if (targetClassList.contains("card__like-button")) {
-    targetClassList.toggle("card__like-button_is-active");
-  }
+  event.target.classList.toggle("card__like-button_is-active");
 };
 
-const makeCard = (cardData, likeButtonCallback) => {
+const makeCard = (
+  cardData,
+  deleteCardCallback,
+  likeButtonCallback,
+  zoomPhotoCallback
+) => {
   const placeElementClone = placeElement.cloneNode(true);
-  placeElementClone.querySelector(".card__title").textContent = cardData.name;
+  const cardTitle = placeElementClone.querySelector(".card__title");
+  cardTitle.textContent = cardData.name;
   const cardImage = placeElementClone.querySelector(".card__image");
   cardImage.src = cardData.link;
   cardImage.alt = "Пейзажное фото места " + cardData.name;
-  placeElementClone.querySelector(".card__delete-button");
+  placeElementClone
+    .querySelector(".card__delete-button")
+    .addEventListener("click", deleteCardCallback);
+  placeElementClone
+    .querySelector(".card__like-button")
+    .addEventListener("click", likeButtonCallback);
+  cardImage.addEventListener("click", () => {
+    zoomPhotoCallback(cardTitle.textContent, cardImage.src);
+  });
   return placeElementClone;
 };
 
 const deleteCard = (event) => {
-  if (event.target.classList.contains("card__delete-button")) {
-    event.target.closest(".places__item").remove();
-  }
+  event.target.closest(".places__item").remove();
 };
 
 export { deleteCard, handleLikeButton, makeCard };
