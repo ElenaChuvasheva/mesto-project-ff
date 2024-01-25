@@ -1,6 +1,6 @@
 import "../pages/index.css";
 
-import { deleteCard, handleLikeButton, makeCard } from "./card.js";
+import { handleDeleteCard, handleLikeButton, makeCard } from "./card.js";
 import { initialCards } from "./cards.js";
 import { closeModal, handleOverlayClick, openModal } from "./modal.js";
 
@@ -19,12 +19,19 @@ const newPlaceForm = document.querySelector("form[name='new-place']");
 const newPlaceName = newPlaceForm.querySelector("input[name='place-name']");
 const newPlaceUrl = newPlaceForm.querySelector("input[name='link']");
 
-const zoomPhoto = (title, src) => {
+const handleClickPhoto = (title, src, alt) => {
   captionImgPopup.textContent = title;
   photoImgPopup.src = src;
+  photoImgPopup.alt = alt;
   photoImgPopup.onload = () => {
     openModal(imgPopup);
   };
+};
+
+const makeCardCallbacks = {
+  deleteCardCallback: handleDeleteCard,
+  likeButtonCallback: handleLikeButton,
+  zoomPhotoCallback: handleClickPhoto,
 };
 
 const handleProfileFormSubmit = (event) => {
@@ -37,19 +44,14 @@ const handleProfileFormSubmit = (event) => {
 const handleNewPlaceFormSubmit = (event) => {
   event.preventDefault();
   const cardData = { name: newPlaceName.value, link: newPlaceUrl.value };
-  const newCardClone = makeCard(
-    cardData,
-    deleteCard,
-    handleLikeButton,
-    zoomPhoto
-  );
+  const newCardClone = makeCard(cardData, makeCardCallbacks);
   placesList.prepend(newCardClone);
   closeModal(newPlacePopup);
   newPlaceForm.reset();
 };
 
 initialCards.forEach((item) => {
-  placesList.append(makeCard(item, deleteCard, handleLikeButton, zoomPhoto));
+  placesList.append(makeCard(item, makeCardCallbacks));
 });
 
 [imgPopup, profilePopup, newPlacePopup].forEach((popup) => {

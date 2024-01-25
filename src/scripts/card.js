@@ -5,12 +5,7 @@ const handleLikeButton = (event) => {
   event.target.classList.toggle("card__like-button_is-active");
 };
 
-const makeCard = (
-  cardData,
-  deleteCardCallback,
-  likeButtonCallback,
-  zoomPhotoCallback
-) => {
+const makeCard = (cardData, callbacks) => {
   const placeElementClone = placeElement.cloneNode(true);
   const cardTitle = placeElementClone.querySelector(".card__title");
   cardTitle.textContent = cardData.name;
@@ -19,18 +14,22 @@ const makeCard = (
   cardImage.alt = "Пейзажное фото места " + cardData.name;
   placeElementClone
     .querySelector(".card__delete-button")
-    .addEventListener("click", deleteCardCallback);
+    .addEventListener("click", callbacks.deleteCardCallback);
   placeElementClone
     .querySelector(".card__like-button")
-    .addEventListener("click", likeButtonCallback);
+    .addEventListener("click", callbacks.likeButtonCallback);
   cardImage.addEventListener("click", () => {
-    zoomPhotoCallback(cardTitle.textContent, cardImage.src);
+    callbacks.zoomPhotoCallback(
+      cardTitle.textContent,
+      cardImage.src,
+      cardData.name
+    );
   });
   return placeElementClone;
 };
 
-const deleteCard = (event) => {
+const handleDeleteCard = (event) => {
   event.target.closest(".places__item").remove();
 };
 
-export { deleteCard, handleLikeButton, makeCard };
+export { handleDeleteCard, handleLikeButton, makeCard };
