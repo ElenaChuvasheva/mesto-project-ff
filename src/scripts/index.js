@@ -3,6 +3,7 @@ import "../pages/index.css";
 import { handleDeleteCard, handleLikeButton, makeCard } from "./card.js";
 import { initialCards } from "./cards.js";
 import { closeModal, handleOverlayClick, openModal } from "./modal.js";
+import { enableValidation } from "./validation.js";
 
 const placesList = document.querySelector(".places__list");
 const imgPopup = document.querySelector(".popup_type_image"),
@@ -76,3 +77,12 @@ openAddPopupButton.addEventListener("click", () => {
 });
 
 newPlaceForm.addEventListener("submit", handleNewPlaceFormSubmit);
+
+enableValidation({
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_disabled",
+  inputErrorClass: "popup__input_type_error",
+  errorClass: "popup__error_visible",
+});
