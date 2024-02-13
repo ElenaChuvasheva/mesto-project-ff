@@ -1,9 +1,9 @@
 import "../pages/index.css";
 
 import { handleDeleteCard, handleLikeButton, makeCard } from "./card.js";
-import { initialCards } from "./cards.js";
 import { closeModal, handleOverlayClick, openModal } from "./modal.js";
 import { clearValidation, enableValidation } from "./validation.js";
+import { getInitialCards, getCurrentUser } from "./api.js";
 
 const placesList = document.querySelector(".places__list");
 const imgPopup = document.querySelector(".popup_type_image"),
@@ -15,6 +15,7 @@ const photoImgPopup = imgPopup.querySelector(".popup__image");
 const captionImgPopup = imgPopup.querySelector(".popup__caption");
 const profileForm = document.querySelector("[name='edit-profile']");
 const profileTitle = document.querySelector(".profile__title");
+const profileImage = document.querySelector(".profile__image");
 const profileDescription = document.querySelector(".profile__description");
 const newPlaceForm = document.querySelector("form[name='new-place']");
 const newPlaceName = newPlaceForm.querySelector("input[name='place-name']");
@@ -60,9 +61,24 @@ const handleNewPlaceFormSubmit = (event) => {
   newPlaceForm.reset();
 };
 
-initialCards.forEach((item) => {
-  placesList.append(makeCard(item, makeCardCallbacks));
-});
+const fillProfile = (profileData) => {
+  profileTitle.textContent = profileData.name;
+  profileDescription.textContent = profileData.about;
+  profileImage.style.backgroundImage = `url(\'${profileData.avatar}\')`;
+};
+
+Promise.all([getInitialCards(), getCurrentUser()])
+  .then((results) => {
+    const initialCards = results[0];
+    const profileData = results[1];
+    initialCards.forEach((item) => {
+      placesList.append(makeCard(item, makeCardCallbacks));
+    });
+    fillProfile(profileData);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 [imgPopup, profilePopup, newPlacePopup].forEach((popup) => {
   const closePopupButton = popup.querySelector(".popup__close");
