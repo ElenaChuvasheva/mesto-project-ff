@@ -3,7 +3,7 @@ import "../pages/index.css";
 import { handleDeleteCard, handleLikeButton, makeCard } from "./card.js";
 import { initialCards } from "./cards.js";
 import { closeModal, handleOverlayClick, openModal } from "./modal.js";
-import { enableValidation } from "./validation.js";
+import { clearValidation, enableValidation } from "./validation.js";
 
 const placesList = document.querySelector(".places__list");
 const imgPopup = document.querySelector(".popup_type_image"),
@@ -19,6 +19,15 @@ const profileDescription = document.querySelector(".profile__description");
 const newPlaceForm = document.querySelector("form[name='new-place']");
 const newPlaceName = newPlaceForm.querySelector("input[name='place-name']");
 const newPlaceUrl = newPlaceForm.querySelector("input[name='link']");
+
+const validationConfig = {
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_disabled",
+  inputErrorClass: "popup__input_type_error",
+  errorClass: "popup__error_visible",
+};
 
 const handleClickPhoto = (title, src, alt) => {
   captionImgPopup.textContent = title;
@@ -67,22 +76,19 @@ initialCards.forEach((item) => {
 openProfilePopupButton.addEventListener("click", () => {
   profileForm.name.value = profileTitle.textContent;
   profileForm.description.value = profileDescription.textContent;
+  clearValidation(profileForm, validationConfig);
   openModal(profilePopup);
 });
 
 profileForm.addEventListener("submit", handleProfileFormSubmit);
 
 openAddPopupButton.addEventListener("click", () => {
+  newPlaceName.value = "";
+  newPlaceUrl.value = "";
+  clearValidation(newPlaceForm, validationConfig);
   openModal(newPlacePopup);
 });
 
 newPlaceForm.addEventListener("submit", handleNewPlaceFormSubmit);
 
-enableValidation({
-  formSelector: ".popup__form",
-  inputSelector: ".popup__input",
-  submitButtonSelector: ".popup__button",
-  inactiveButtonClass: "popup__button_disabled",
-  inputErrorClass: "popup__input_type_error",
-  errorClass: "popup__error_visible",
-});
+enableValidation(validationConfig);
