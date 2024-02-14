@@ -15,7 +15,6 @@
   <main class="content">
     <section class="profile page__section">
       <div class="profile__image"></div>
-      <!-- style="background-image: url('<%=require(`./images/avatar.jpg`)%>');" -->
       <div class="profile__info">
         <h1 class="profile__title"></h1>
         <button class="profile__edit-button" type="button"></button>
@@ -43,7 +42,7 @@
           <span class="popup__error username-input-error"></span>
         </div>
         <div class="popup__input__wrapper">
-          <input type="text" name="description" class="popup__input popup__input_type_description" minlength="2" maxlength="200" placeholder="Занятие" pattern="^[a-zA-Zа-яёА-ЯЁ\-,.\s]*$" data-error-pattern-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы" id="user-description-input" required>
+          <input type="text" name="description" class="popup__input popup__input_type_description" minlength="2" maxlength="200" placeholder="Занятие" pattern="^[a-zA-Zа-яёА-ЯЁ\-,.\s]*$" data-error-pattern-message="Разрешены только латинские, кириллические буквы, знаки дефиса, пробелы, запятые и точки" id="user-description-input" required>
           <span class="popup__error user-description-input-error"></span>
         </div>
         <button type="submit" class="button popup__button">Сохранить</button>
@@ -83,7 +82,10 @@
     <div class="card__description">
       <h2 class="card__title">
       </h2>
-      <button type="button" class="card__like-button"></button>
+      <div class="card__like">
+        <button type="button" class="card__like-button"></button>
+        <div class="card__like-number"></div>
+      </div>
     </div>
   </li>
 </template>

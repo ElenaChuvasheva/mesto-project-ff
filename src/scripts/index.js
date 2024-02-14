@@ -1,9 +1,14 @@
 import "../pages/index.css";
 
+import {
+  getCurrentUser,
+  getInitialCards,
+  patchCurrentUser,
+  postNewCard,
+} from "./api.js";
 import { handleDeleteCard, handleLikeButton, makeCard } from "./card.js";
 import { closeModal, handleOverlayClick, openModal } from "./modal.js";
 import { clearValidation, enableValidation } from "./validation.js";
-import { getInitialCards, getCurrentUser } from "./api.js";
 
 const placesList = document.querySelector(".places__list");
 const imgPopup = document.querySelector(".popup_type_image"),
@@ -47,16 +52,32 @@ const makeCardCallbacks = {
 
 const handleProfileFormSubmit = (event) => {
   event.preventDefault();
-  profileTitle.textContent = profileForm.name.value;
-  profileDescription.textContent = profileForm.description.value;
+  const userData = {
+    name: profileForm.name.value,
+    about: profileForm.description.value,
+  };
+  patchCurrentUser(userData)
+    .then((result) => {
+      profileTitle.textContent = result.name;
+      profileDescription.textContent = result.about;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
   closeModal(profilePopup);
 };
 
 const handleNewPlaceFormSubmit = (event) => {
   event.preventDefault();
   const cardData = { name: newPlaceName.value, link: newPlaceUrl.value };
-  const newCardClone = makeCard(cardData, makeCardCallbacks);
-  placesList.prepend(newCardClone);
+  postNewCard(cardData)
+    .then((result) => {
+      const newCardClone = makeCard(result, makeCardCallbacks);
+      placesList.prepend(newCardClone);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
   closeModal(newPlacePopup);
   newPlaceForm.reset();
 };
@@ -72,7 +93,7 @@ Promise.all([getInitialCards(), getCurrentUser()])
     const initialCards = results[0];
     const profileData = results[1];
     initialCards.forEach((item) => {
-      placesList.append(makeCard(item, makeCardCallbacks));
+      placesList.append(makeCard(item, makeCardCallbacks, profileData));
     });
     fillProfile(profileData);
   })
