@@ -55,10 +55,26 @@ const deleteCard = (cardId) => {
   }).then((res) => processFetchResult(res, "Ошибка удаления карточки"));
 };
 
+const likeCard = (cardId) => {
+  return fetch(`${baseUrl}/cards/likes/${cardId}`, {
+    method: "PUT",
+    headers: apiConfig.headers,
+  }).then((res) => processFetchResult(res, "Ошибка добавления лайка"));
+};
+
+const unlikeCard = (cardId) => {
+  return fetch(`${baseUrl}/cards/likes/${cardId}`, {
+    method: "DELETE",
+    headers: apiConfig.headers,
+  }).then((res) => processFetchResult(res, "Ошибка удаления лайка"));
+};
+
 export {
   deleteCard,
   getCurrentUser,
   getInitialCards,
   patchCurrentUser,
   postNewCard,
+  likeCard,
+  unlikeCard,
 };

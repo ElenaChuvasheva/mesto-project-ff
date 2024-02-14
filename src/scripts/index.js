@@ -72,7 +72,7 @@ const handleNewPlaceFormSubmit = (event) => {
   const cardData = { name: newPlaceName.value, link: newPlaceUrl.value };
   postNewCard(cardData)
     .then((result) => {
-      const newCardClone = makeCard(result, makeCardCallbacks);
+      const newCardClone = makeCard(result, result.owner, makeCardCallbacks);
       placesList.prepend(newCardClone);
     })
     .catch((err) => {
@@ -93,7 +93,7 @@ Promise.all([getInitialCards(), getCurrentUser()])
     const initialCards = results[0];
     const profileData = results[1];
     initialCards.forEach((item) => {
-      placesList.append(makeCard(item, makeCardCallbacks, profileData));
+      placesList.append(makeCard(item, profileData, makeCardCallbacks));
     });
     fillProfile(profileData);
   })
