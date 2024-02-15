@@ -5,6 +5,7 @@ import {
   getInitialCards,
   patchCurrentUser,
   postNewCard,
+  patchAvatar,
 } from "./api.js";
 import { handleDeleteCard, handleLikeButton, makeCard } from "./card.js";
 import { closeModal, handleOverlayClick, openModal } from "./modal.js";
@@ -13,9 +14,11 @@ import { clearValidation, enableValidation } from "./validation.js";
 const placesList = document.querySelector(".places__list");
 const imgPopup = document.querySelector(".popup_type_image"),
   profilePopup = document.querySelector(".popup_type_edit"),
-  newPlacePopup = document.querySelector(".popup_type_new-card");
+  newPlacePopup = document.querySelector(".popup_type_new-card"),
+  avatarEditPopup = document.querySelector(".popup_type_avatar-edit");
 const openProfilePopupButton = document.querySelector(".profile__edit-button"),
-  openAddPopupButton = document.querySelector(".profile__add-button");
+  openAddPopupButton = document.querySelector(".profile__add-button"),
+  openAvatarEditButton = document.querySelector(".profile__image");
 const photoImgPopup = imgPopup.querySelector(".popup__image");
 const captionImgPopup = imgPopup.querySelector(".popup__caption");
 const profileForm = document.querySelector("[name='edit-profile']");
@@ -25,6 +28,8 @@ const profileDescription = document.querySelector(".profile__description");
 const newPlaceForm = document.querySelector("form[name='new-place']");
 const newPlaceName = newPlaceForm.querySelector("input[name='place-name']");
 const newPlaceUrl = newPlaceForm.querySelector("input[name='link']");
+const avatarEditForm = document.querySelector("form[name='avatar']");
+const avatarUrl = avatarEditForm.querySelector("input[name='avatar-link']");
 
 const validationConfig = {
   formSelector: ".popup__form",
@@ -82,6 +87,20 @@ const handleNewPlaceFormSubmit = (event) => {
   newPlaceForm.reset();
 };
 
+const handleAvatarEditFormSubmit = (event) => {
+  event.preventDefault();
+  const url = avatarUrl.value;
+  patchAvatar({ avatar: url })
+    .then((result) => {
+      profileImage.style.backgroundImage = `url(\'${result.avatar}\')`;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  closeModal(avatarEditPopup);
+  avatarEditForm.reset();
+};
+
 const fillProfile = (profileData) => {
   profileTitle.textContent = profileData.name;
   profileDescription.textContent = profileData.about;
@@ -101,7 +120,7 @@ Promise.all([getInitialCards(), getCurrentUser()])
     console.log(err);
   });
 
-[imgPopup, profilePopup, newPlacePopup].forEach((popup) => {
+[imgPopup, profilePopup, newPlacePopup, avatarEditPopup].forEach((popup) => {
   const closePopupButton = popup.querySelector(".popup__close");
   closePopupButton.addEventListener("click", () => {
     closeModal(popup);
@@ -127,5 +146,13 @@ openAddPopupButton.addEventListener("click", () => {
 });
 
 newPlaceForm.addEventListener("submit", handleNewPlaceFormSubmit);
+
+openAvatarEditButton.addEventListener("click", () => {
+  avatarUrl.value = "";
+  clearValidation(avatarEditForm, validationConfig);
+  openModal(avatarEditPopup);
+});
+
+avatarEditForm.addEventListener("submit", handleAvatarEditFormSubmit);
 
 enableValidation(validationConfig);

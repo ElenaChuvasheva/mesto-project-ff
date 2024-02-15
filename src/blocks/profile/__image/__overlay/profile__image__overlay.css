@@ -1,0 +1,9 @@
+.profile__image__overlay {
+  display: none;
+  place-items: center;
+  height: 100%;  
+  -webkit-border-radius: inherit;
+  -moz-border-radius: inherit;
+  border-radius: inherit;
+  background-color: rgba(0, 0, 0, 0.8);
+}

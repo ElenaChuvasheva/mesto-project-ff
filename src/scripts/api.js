@@ -69,6 +69,16 @@ const unlikeCard = (cardId) => {
   }).then((res) => processFetchResult(res, "Ошибка удаления лайка"));
 };
 
+const patchAvatar = (urlData) => {
+  return fetch(`${apiConfig.profileUrl}/avatar`, {
+    method: "PATCH",
+    headers: apiConfig.headers,
+    body: JSON.stringify(urlData),
+  }).then((res) =>
+    processFetchResult(res, "Ошибка изменения аватара пользователя")
+  );
+};
+
 export {
   deleteCard,
   getCurrentUser,
@@ -77,4 +87,5 @@ export {
   postNewCard,
   likeCard,
   unlikeCard,
+  patchAvatar,
 };

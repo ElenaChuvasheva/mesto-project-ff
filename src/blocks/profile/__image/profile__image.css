@@ -1,26 +1,30 @@
 .profile__image {
   width: 120px;
   height: 120px;
+  margin: 0 29px 0 0;  
+  border: none;
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
   border-radius: 50%;
-  background-size: cover;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  background-color: transparent;
   background-position: center;
-  margin: 0 29px 0 0;
+  background-size: cover;
+  cursor: pointer;
 }
 
-.overlay {
-  display: none;
-  height: 100%;  
-  -webkit-border-radius: inherit;
-  -moz-border-radius: inherit;
-  border-radius: inherit;
+.profile__image:focus,
+.profile__image:focus-visible,
+.profile__image:active,
+.profile__image:hover {    
+  outline: none;
 }
 
-.profile__image:hover .overlay{
+.profile__image:hover .profile__image__overlay,
+.profile__image:focus-visible .profile__image__overlay {
   display: grid;
-  place-items: center;
-  background-color: rgba(0, 0, 0, 0.8);
 }
 
 @media screen and (max-width: 740px) {
