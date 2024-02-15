@@ -14,7 +14,13 @@
   </header>
   <main class="content">
     <section class="profile page__section">
-      <div class="profile__image"></div>
+      <!-- <div class="profile__image__wrapper">         -->
+      <div class="profile__image"> 
+        <div class="overlay">
+          <img src="<%=require('./images/edit-profile-photo.svg')%>" alt="Иконка редактиврования аватара" class="profile__image-edit">
+        </div>
+      </div>
+      <!-- </div> -->
       <div class="profile__info">
         <h1 class="profile__title"></h1>
         <button class="profile__edit-button" type="button"></button>
