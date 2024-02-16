@@ -60,7 +60,7 @@ const makeCardCallbacks = {
   zoomPhotoCallback: handleClickPhoto,
 };
 
-const doWhenSubmitPopupForm = (config) => {
+const submitPopupForm = (config) => {
   const popupForm = config.popup.querySelector("form");
   config.event.preventDefault();
   renderLoading(config.popup, true);
@@ -83,7 +83,7 @@ const handleProfileFormSubmit = (event) => {
     name: profileForm.name.value,
     about: profileForm.description.value,
   };
-  doWhenSubmitPopupForm({
+  submitPopupForm({
     event: event,
     popup: profilePopup,
     fetchFunction: patchCurrentUser,
@@ -97,7 +97,7 @@ const handleProfileFormSubmit = (event) => {
 
 const handleNewPlaceFormSubmit = (event) => {
   const cardData = { name: newPlaceName.value, link: newPlaceUrl.value };
-  doWhenSubmitPopupForm({
+  submitPopupForm({
     event: event,
     popup: newPlacePopup,
     fetchFunction: postNewCard,
@@ -111,7 +111,7 @@ const handleNewPlaceFormSubmit = (event) => {
 
 const handleAvatarEditFormSubmit = (event) => {
   const urlData = { avatar: avatarUrl.value };
-  doWhenSubmitPopupForm({
+  submitPopupForm({
     event: event,
     popup: avatarEditPopup,
     fetchFunction: patchAvatar,
@@ -150,7 +150,7 @@ Promise.all([getInitialCards(), getCurrentUser()])
   popup.classList.add("popup_is-animated");
 });
 
-const doWhenOpenFormPopup = (config) => {
+const openFormPopup = (config) => {
   const popupForm = config.popup.querySelector("form");
   if (config.refreshContent) {
     config.refreshContent();
@@ -162,7 +162,7 @@ const doWhenOpenFormPopup = (config) => {
 };
 
 openProfilePopupButton.addEventListener("click", () => {
-  doWhenOpenFormPopup({
+  openFormPopup({
     popup: profilePopup,
     refreshContent: () => {
       profileForm.name.value = profileTitle.textContent;
@@ -172,13 +172,13 @@ openProfilePopupButton.addEventListener("click", () => {
 });
 
 openAddPopupButton.addEventListener("click", () => {
-  doWhenOpenFormPopup({
+  openFormPopup({
     popup: newPlacePopup,
   });
 });
 
 openAvatarEditButton.addEventListener("click", () => {
-  doWhenOpenFormPopup({
+  openFormPopup({
     popup: avatarEditPopup,
   });
 });
