@@ -16,76 +16,86 @@ const processFetchResult = (res, errText) => {
   return Promise.reject(`${errText}: ${res.status}`);
 };
 
-const getInitialCards = () => {
-  return fetch(apiConfig.cardsUrl, {
+const fetchProjectUrl = (config) => {
+  return fetch(config.url, {
+    method: config.method === undefined ? "GET" : config.method,
     headers: apiConfig.headers,
-  }).then((res) => processFetchResult(res, "Ошибка получения карточек"));
+    body: config.data === undefined ? null : JSON.stringify(config.data),
+  }).then((res) => processFetchResult(res, config.errMessage));
+};
+
+const getInitialCards = () => {
+  return fetchProjectUrl({
+    url: apiConfig.cardsUrl,
+    errMessage: "Ошибка получения карточек",
+  });
 };
 
 const getCurrentUser = () => {
-  return fetch(apiConfig.profileUrl, {
-    headers: apiConfig.headers,
-  }).then((res) =>
-    processFetchResult(res, "Ошибка получения профиля пользователя")
-  );
+  return fetchProjectUrl({
+    url: apiConfig.profileUrl,
+    errMessage: "Ошибка получения профиля пользователя",
+  });
 };
 
 const patchCurrentUser = (userData) => {
-  return fetch(apiConfig.profileUrl, {
+  return fetchProjectUrl({
+    url: apiConfig.profileUrl,
     method: "PATCH",
-    headers: apiConfig.headers,
-    body: JSON.stringify(userData),
-  }).then((res) =>
-    processFetchResult(res, "Ошибка изменения профиля пользователя")
-  );
+    data: userData,
+    errMessage: "Ошибка изменения профиля пользователя",
+  });
 };
 
 const postNewCard = (cardData) => {
-  return fetch(apiConfig.cardsUrl, {
+  return fetchProjectUrl({
+    url: apiConfig.cardsUrl,
     method: "POST",
-    headers: apiConfig.headers,
-    body: JSON.stringify(cardData),
-  }).then((res) => processFetchResult(res, "Ошибка добавления новой карточки"));
+    data: cardData,
+    errMessage: "Ошибка добавления новой карточки",
+  });
 };
 
 const deleteCard = (cardId) => {
-  return fetch(`${apiConfig.cardsUrl}/${cardId}`, {
+  return fetchProjectUrl({
+    url: `${apiConfig.cardsUrl}/${cardId}`,
     method: "DELETE",
-    headers: apiConfig.headers,
-  }).then((res) => processFetchResult(res, "Ошибка удаления карточки"));
+    errMessage: "Ошибка удаления карточки",
+  });
 };
 
 const likeCard = (cardId) => {
-  return fetch(`${baseUrl}/cards/likes/${cardId}`, {
+  return fetchProjectUrl({
+    url: `${baseUrl}/cards/likes/${cardId}`,
     method: "PUT",
-    headers: apiConfig.headers,
-  }).then((res) => processFetchResult(res, "Ошибка добавления лайка"));
+    errMessage: "Ошибка добавления лайка",
+  });
 };
 
 const unlikeCard = (cardId) => {
-  return fetch(`${baseUrl}/cards/likes/${cardId}`, {
+  return fetchProjectUrl({
+    url: `${baseUrl}/cards/likes/${cardId}`,
     method: "DELETE",
-    headers: apiConfig.headers,
-  }).then((res) => processFetchResult(res, "Ошибка удаления лайка"));
+    errMessage: "Ошибка удаления лайка",
+  });
 };
 
 const patchAvatar = (urlData) => {
-  return fetch(`${apiConfig.profileUrl}/avatar`, {
+  return fetchProjectUrl({
+    url: `${apiConfig.profileUrl}/avatar`,
     method: "PATCH",
-    headers: apiConfig.headers,
-    body: JSON.stringify(urlData),
-  }).then((res) =>
-    processFetchResult(res, "Ошибка изменения аватара пользователя")
-  );
+    data: urlData,
+    errMessage: "Ошибка изменения аватара пользователя",
+  });
 };
 
 export {
   deleteCard,
   getCurrentUser,
   getInitialCards,
+  likeCard,
+  patchAvatar,
   patchCurrentUser,
   postNewCard,
-  likeCard,
   unlikeCard,
-  patchAvatar,
 };

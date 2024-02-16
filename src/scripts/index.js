@@ -60,59 +60,66 @@ const makeCardCallbacks = {
   zoomPhotoCallback: handleClickPhoto,
 };
 
+const doWhenSubmitPopupForm = (config) => {
+  const popupForm = config.popup.querySelector("form");
+  config.event.preventDefault();
+  renderLoading(config.popup, true);
+  config
+    .fetchFunction(config.data)
+    .then((result) => {
+      config.processResult(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      closeModal(config.popup);
+      popupForm.reset();
+    });
+};
+
 const handleProfileFormSubmit = (event) => {
-  event.preventDefault();
   const userData = {
     name: profileForm.name.value,
     about: profileForm.description.value,
   };
-  renderLoading(profilePopup, true);
-  patchCurrentUser(userData)
-    .then((result) => {
+  doWhenSubmitPopupForm({
+    event: event,
+    popup: profilePopup,
+    fetchFunction: patchCurrentUser,
+    data: userData,
+    processResult: (result) => {
       profileTitle.textContent = result.name;
       profileDescription.textContent = result.about;
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-    .finally(() => {
-      closeModal(profilePopup);
-    });
+    },
+  });
 };
 
 const handleNewPlaceFormSubmit = (event) => {
-  event.preventDefault();
   const cardData = { name: newPlaceName.value, link: newPlaceUrl.value };
-  renderLoading(newPlacePopup, true);
-  postNewCard(cardData)
-    .then((result) => {
+  doWhenSubmitPopupForm({
+    event: event,
+    popup: newPlacePopup,
+    fetchFunction: postNewCard,
+    data: cardData,
+    processResult: (result) => {
       const newCardClone = makeCard(result, result.owner, makeCardCallbacks);
       placesList.prepend(newCardClone);
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-    .finally(() => {
-      closeModal(newPlacePopup);
-      newPlaceForm.reset();
-    });
+    },
+  });
 };
 
 const handleAvatarEditFormSubmit = (event) => {
-  event.preventDefault();
-  const url = avatarUrl.value;
-  renderLoading(avatarEditPopup, true);
-  patchAvatar({ avatar: url })
-    .then((result) => {
+  const urlData = { avatar: avatarUrl.value };
+  doWhenSubmitPopupForm({
+    event: event,
+    popup: avatarEditPopup,
+    fetchFunction: patchAvatar,
+    data: urlData,
+    processResult: (result) => {
       profileImage.style.backgroundImage = `url(\'${result.avatar}\')`;
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-    .finally(() => {
-      closeModal(avatarEditPopup);
-      avatarEditForm.reset();
-    });
+    },
+  });
 };
 
 const fillProfile = (profileData) => {
@@ -143,30 +150,41 @@ Promise.all([getInitialCards(), getCurrentUser()])
   popup.classList.add("popup_is-animated");
 });
 
+const doWhenOpenFormPopup = (config) => {
+  const popupForm = config.popup.querySelector("form");
+  if (config.refreshContent) {
+    config.refreshContent();
+  } else {
+    popupForm.reset();
+  }
+  clearValidation(popupForm, validationConfig);
+  openModal(config.popup);
+};
+
 openProfilePopupButton.addEventListener("click", () => {
-  profileForm.name.value = profileTitle.textContent;
-  profileForm.description.value = profileDescription.textContent;
-  clearValidation(profileForm, validationConfig);
-  openModal(profilePopup);
+  doWhenOpenFormPopup({
+    popup: profilePopup,
+    refreshContent: () => {
+      profileForm.name.value = profileTitle.textContent;
+      profileForm.description.value = profileDescription.textContent;
+    },
+  });
+});
+
+openAddPopupButton.addEventListener("click", () => {
+  doWhenOpenFormPopup({
+    popup: newPlacePopup,
+  });
+});
+
+openAvatarEditButton.addEventListener("click", () => {
+  doWhenOpenFormPopup({
+    popup: avatarEditPopup,
+  });
 });
 
 profileForm.addEventListener("submit", handleProfileFormSubmit);
-
-openAddPopupButton.addEventListener("click", () => {
-  newPlaceName.value = "";
-  newPlaceUrl.value = "";
-  clearValidation(newPlaceForm, validationConfig);
-  openModal(newPlacePopup);
-});
-
 newPlaceForm.addEventListener("submit", handleNewPlaceFormSubmit);
-
-openAvatarEditButton.addEventListener("click", () => {
-  avatarUrl.value = "";
-  clearValidation(avatarEditForm, validationConfig);
-  openModal(avatarEditPopup);
-});
-
 avatarEditForm.addEventListener("submit", handleAvatarEditFormSubmit);
 
 enableValidation(validationConfig);
