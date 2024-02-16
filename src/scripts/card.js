@@ -4,9 +4,9 @@ const cardTemplate = document.querySelector("#card-template").content;
 const placeElement = cardTemplate.querySelector(".places__item");
 const activeLikeClass = "card__like-button_is-active";
 
-const userInLikes = (likes, user) => {
+const userInLikes = (likes, userId) => {
   return likes.some((item) => {
-    return item._id === user._id;
+    return item._id === userId;
   });
 };
 
@@ -28,7 +28,18 @@ const handleLikeButton = (event, cardData) => {
     });
 };
 
-const makeCard = (cardData, profileData, callbacks) => {
+const handleDeleteCard = (event, cardId) => {
+  const card = event.target.closest(".places__item");
+  deleteCard(cardId)
+    .then((result) => {
+      card.remove();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+const makeCard = (cardData, profileId, callbacks) => {
   const placeElementClone = placeElement.cloneNode(true);
   const cardTitle = placeElementClone.querySelector(".card__title");
   const cardImage = placeElementClone.querySelector(".card__image");
@@ -41,14 +52,14 @@ const makeCard = (cardData, profileData, callbacks) => {
   cardImage.src = cardData.link;
   cardImage.alt = "Пейзажное фото места " + cardData.name;
   cardLikeNumber.textContent = cardData.likes.length;
-  if (profileData._id === cardData.owner._id) {
+  if (profileId === cardData.owner._id) {
     cardDeleteButton.addEventListener("click", (event) => {
       callbacks.deleteCardCallback(event, cardData._id);
     });
   } else {
     cardDeleteButton.classList.add("card__delete-button_is-hidden");
   }
-  if (userInLikes(cardData.likes, profileData)) {
+  if (userInLikes(cardData.likes, profileId)) {
     cardLikeButton.classList.add(activeLikeClass);
   }
   cardLikeButton.addEventListener("click", (event) => {
@@ -62,17 +73,6 @@ const makeCard = (cardData, profileData, callbacks) => {
     );
   });
   return placeElementClone;
-};
-
-const handleDeleteCard = (event, cardId) => {
-  const card = event.target.closest(".places__item");
-  deleteCard(cardId)
-    .then((result) => {
-      card.remove();
-    })
-    .catch((err) => {
-      console.log(err);
-    });
 };
 
 export { handleDeleteCard, handleLikeButton, makeCard };

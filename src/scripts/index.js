@@ -103,7 +103,11 @@ const handleNewPlaceFormSubmit = (event) => {
     fetchFunction: postNewCard,
     data: cardData,
     processResult: (result) => {
-      const newCardClone = makeCard(result, result.owner, makeCardCallbacks);
+      const newCardClone = makeCard(
+        result,
+        result.owner._id,
+        makeCardCallbacks
+      );
       placesList.prepend(newCardClone);
     },
   });
@@ -133,7 +137,7 @@ Promise.all([getInitialCards(), getCurrentUser()])
     const initialCards = results[0];
     const profileData = results[1];
     initialCards.forEach((item) => {
-      placesList.append(makeCard(item, profileData, makeCardCallbacks));
+      placesList.append(makeCard(item, profileData._id, makeCardCallbacks));
     });
     fillProfile(profileData);
   })
