@@ -15,3 +15,5 @@ HTML, CSS, Javascript
 2. Перейдите в командной строке в папку mesto_project_ff/
 3. npm install
 4. npm run dev
+
+И это даже [задеплоено](https://elenachuvasheva.github.io/mesto-project-ff/)...
