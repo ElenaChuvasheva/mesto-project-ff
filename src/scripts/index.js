@@ -3,12 +3,17 @@ import "../pages/index.css";
 import {
   getCurrentUser,
   getInitialCards,
+  patchAvatar,
   patchCurrentUser,
   postNewCard,
-  patchAvatar,
 } from "./api.js";
 import { handleDeleteCard, handleLikeButton, makeCard } from "./card.js";
-import { closeModal, handleOverlayClick, openModal } from "./modal.js";
+import {
+  closeModal,
+  handleOverlayClick,
+  openModal,
+  renderLoading,
+} from "./modal.js";
 import { clearValidation, enableValidation } from "./validation.js";
 
 const placesList = document.querySelector(".places__list");
@@ -61,6 +66,7 @@ const handleProfileFormSubmit = (event) => {
     name: profileForm.name.value,
     about: profileForm.description.value,
   };
+  renderLoading(profilePopup, true);
   patchCurrentUser(userData)
     .then((result) => {
       profileTitle.textContent = result.name;
@@ -68,13 +74,16 @@ const handleProfileFormSubmit = (event) => {
     })
     .catch((err) => {
       console.log(err);
+    })
+    .finally(() => {
+      closeModal(profilePopup);
     });
-  closeModal(profilePopup);
 };
 
 const handleNewPlaceFormSubmit = (event) => {
   event.preventDefault();
   const cardData = { name: newPlaceName.value, link: newPlaceUrl.value };
+  renderLoading(newPlacePopup, true);
   postNewCard(cardData)
     .then((result) => {
       const newCardClone = makeCard(result, result.owner, makeCardCallbacks);
@@ -82,23 +91,28 @@ const handleNewPlaceFormSubmit = (event) => {
     })
     .catch((err) => {
       console.log(err);
+    })
+    .finally(() => {
+      closeModal(newPlacePopup);
+      newPlaceForm.reset();
     });
-  closeModal(newPlacePopup);
-  newPlaceForm.reset();
 };
 
 const handleAvatarEditFormSubmit = (event) => {
   event.preventDefault();
   const url = avatarUrl.value;
+  renderLoading(avatarEditPopup, true);
   patchAvatar({ avatar: url })
     .then((result) => {
       profileImage.style.backgroundImage = `url(\'${result.avatar}\')`;
     })
     .catch((err) => {
       console.log(err);
+    })
+    .finally(() => {
+      closeModal(avatarEditPopup);
+      avatarEditForm.reset();
     });
-  closeModal(avatarEditPopup);
-  avatarEditForm.reset();
 };
 
 const fillProfile = (profileData) => {
