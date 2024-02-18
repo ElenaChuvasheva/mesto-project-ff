@@ -8,13 +8,10 @@ import {
   postNewCard,
 } from "./api.js";
 import { handleDeleteCard, handleLikeButton, makeCard } from "./card.js";
-import {
-  closeModal,
-  handleOverlayClick,
-  openModal,
-  renderLoading,
-} from "./modal.js";
+import { closeModal, handleOverlayClick, openModal } from "./modal.js";
+import { renderLoading } from "./utils.js";
 import { clearValidation, enableValidation } from "./validation.js";
+import { validationConfig } from "./constants.js";
 
 const placesList = document.querySelector(".places__list");
 const imgPopup = document.querySelector(".popup_type_image"),
@@ -36,15 +33,6 @@ const newPlaceUrl = newPlaceForm.querySelector("input[name='link']");
 const avatarEditForm = document.querySelector("form[name='avatar']");
 const avatarUrl = avatarEditForm.querySelector("input[name='avatar-link']");
 
-const validationConfig = {
-  formSelector: ".popup__form",
-  inputSelector: ".popup__input",
-  submitButtonSelector: ".popup__button",
-  inactiveButtonClass: "popup__button_disabled",
-  inputErrorClass: "popup__input_type_error",
-  errorClass: "popup__error_visible",
-};
-
 const handleClickPhoto = (title, src, alt) => {
   captionImgPopup.textContent = title;
   photoImgPopup.src = src;
@@ -60,21 +48,27 @@ const makeCardCallbacks = {
   zoomPhotoCallback: handleClickPhoto,
 };
 
+const renderLoadingPopup = (popup, isLoading) => {
+  const submitButton = popup.querySelector("button[type='submit']");
+  if (submitButton !== null) {
+    renderLoading(submitButton, isLoading);
+  }
+};
+
 const submitPopupForm = (config) => {
   const popupForm = config.popup.querySelector("form");
   config.event.preventDefault();
-  renderLoading(config.popup, true);
+  renderLoadingPopup(config.popup, true);
   config
     .fetchFunction(config.data)
     .then((result) => {
       config.processResult(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-    .finally(() => {
       closeModal(config.popup);
       popupForm.reset();
+    })
+    .catch(console.error)
+    .finally(() => {
+      renderLoadingPopup(config.popup, false);
     });
 };
 
@@ -152,6 +146,7 @@ Promise.all([getInitialCards(), getCurrentUser()])
   });
   popup.addEventListener("click", handleOverlayClick);
   popup.classList.add("popup_is-animated");
+  renderLoadingPopup(popup, false);
 });
 
 const openFormPopup = (config) => {
